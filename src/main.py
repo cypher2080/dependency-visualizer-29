@@ -2,6 +2,8 @@ import sys
 
 from src.config import load_config
 from src.errors import VisualizerError
+from src.graph import build_graph
+from src.local_repo import LocalRepository
 from src.pypi import PypiRepository
 
 DEFAULT_CONFIG = "config.ini"
@@ -29,7 +31,15 @@ def show_params(config):
 
 
 def open_repository(config):
+    if config.test_mode:
+        return LocalRepository(config.repository)
     return PypiRepository(config.repository)
+
+
+def make_graph(config):
+    return build_graph(
+        open_repository(config), config.package, config.max_depth,
+        config.exclude, config.version)
 
 
 def show_deps(config):
@@ -40,9 +50,19 @@ def show_deps(config):
         print("  " + name)
 
 
+def show_graph(config):
+    graph, cycles = make_graph(config)
+    print("Граф зависимостей %s:" % config.package)
+    for name, deps in graph.items():
+        print("  %s -> %s" % (name, ", ".join(deps) or "-"))
+    for cycle in cycles:
+        print("Цикл: " + " -> ".join(cycle))
+
+
 MODES = {
     "params": show_params,
     "deps": show_deps,
+    "graph": show_graph,
 }
 
 

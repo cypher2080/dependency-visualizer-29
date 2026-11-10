@@ -8,7 +8,7 @@ from src.errors import RepositoryError
 NAME_PATTERN = re.compile(r"^\s*([A-Za-z0-9][A-Za-z0-9._-]*)")
 EXTRA_PATTERN = re.compile(r"extra\s*==")
 LATEST = "latest"
-TIMEOUT = 15
+TIMEOUT = 30
 
 
 def normalize(name):
