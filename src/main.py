@@ -4,6 +4,7 @@ from src.config import load_config
 from src.errors import VisualizerError
 from src.graph import build_graph, load_order
 from src.local_repo import LocalRepository
+from src.plantuml import save, to_plantuml
 from src.pypi import PypiRepository
 
 DEFAULT_CONFIG = "config.ini"
@@ -66,11 +67,19 @@ def show_order(config):
         print("Циклы разорваны при обходе: %d" % len(cycles))
 
 
+def show_plantuml(config):
+    graph, cycles = make_graph(config)
+    text = to_plantuml(graph, cycles)
+    print(text, end="")
+    print("Сохранено в " + save(text))
+
+
 MODES = {
     "params": show_params,
     "deps": show_deps,
     "graph": show_graph,
     "order": show_order,
+    "plantuml": show_plantuml,
 }
 
 
