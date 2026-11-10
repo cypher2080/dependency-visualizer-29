@@ -8,7 +8,7 @@ from src.plantuml import save, to_plantuml
 from src.pypi import PypiRepository
 
 DEFAULT_CONFIG = "config.ini"
-DEFAULT_MODE = "params"
+DEFAULT_MODE = "all"
 FAILURE_CODE = 1
 
 
@@ -74,12 +74,19 @@ def show_plantuml(config):
     print("Сохранено в " + save(text))
 
 
+def show_all(config):
+    show_graph(config)
+    show_order(config)
+    show_plantuml(config)
+
+
 MODES = {
     "params": show_params,
     "deps": show_deps,
     "graph": show_graph,
     "order": show_order,
     "plantuml": show_plantuml,
+    "all": show_all,
 }
 
 
