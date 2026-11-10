@@ -2,6 +2,7 @@ import sys
 
 from src.config import load_config
 from src.errors import VisualizerError
+from src.pypi import PypiRepository
 
 DEFAULT_CONFIG = "config.ini"
 DEFAULT_MODE = "params"
@@ -27,8 +28,21 @@ def show_params(config):
         print("%s = %s" % (key, value))
 
 
+def open_repository(config):
+    return PypiRepository(config.repository)
+
+
+def show_deps(config):
+    repository = open_repository(config)
+    names = repository.dependencies(config.package, config.version)
+    print("Прямые зависимости %s %s:" % (config.package, config.version))
+    for name in names:
+        print("  " + name)
+
+
 MODES = {
     "params": show_params,
+    "deps": show_deps,
 }
 
 

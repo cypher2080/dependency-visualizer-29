@@ -4,3 +4,7 @@ class VisualizerError(Exception):
 
 class ConfigError(VisualizerError):
     pass
+
+
+class RepositoryError(VisualizerError):
+    pass
