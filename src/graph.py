@@ -43,3 +43,20 @@ def build_graph(repository, root, max_depth, exclude="", version=LATEST):
     builder = GraphBuilder(repository, max_depth, exclude)
     graph = builder.build(root, version)
     return graph, builder.cycles
+
+
+def load_order(graph, root):
+    order = []
+    active = set()
+
+    def visit(name):
+        if name in order or name in active:
+            return
+        active.add(name)
+        for child in graph.get(name, []):
+            visit(child)
+        active.discard(name)
+        order.append(name)
+
+    visit(root)
+    return order

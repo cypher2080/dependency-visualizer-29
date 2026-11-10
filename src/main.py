@@ -2,7 +2,7 @@ import sys
 
 from src.config import load_config
 from src.errors import VisualizerError
-from src.graph import build_graph
+from src.graph import build_graph, load_order
 from src.local_repo import LocalRepository
 from src.pypi import PypiRepository
 
@@ -59,10 +59,18 @@ def show_graph(config):
         print("Цикл: " + " -> ".join(cycle))
 
 
+def show_order(config):
+    graph, cycles = make_graph(config)
+    print("Порядок загрузки: " + " ".join(load_order(graph, config.package)))
+    if cycles:
+        print("Циклы разорваны при обходе: %d" % len(cycles))
+
+
 MODES = {
     "params": show_params,
     "deps": show_deps,
     "graph": show_graph,
+    "order": show_order,
 }
 
 

@@ -2,7 +2,7 @@ import os
 import unittest
 
 from src.errors import RepositoryError
-from src.graph import build_graph
+from src.graph import build_graph, load_order
 from src.local_repo import LocalRepository, parse_graph
 
 
@@ -66,6 +66,23 @@ class BuildGraphTest(unittest.TestCase):
         _, cycles = build_graph(repo("multi_cycle"), "A", 10)
         self.assertIn(["B", "C", "B"], cycles)
         self.assertIn(["A", "B", "C", "D", "A"], cycles)
+
+
+class LoadOrderTest(unittest.TestCase):
+    def order(self, name):
+        graph, _ = build_graph(repo(name), "A", 10)
+        return load_order(graph, "A")
+
+    def test_simple(self):
+        self.assertEqual(self.order("simple"), ["F", "D", "B", "E", "C", "A"])
+
+    def test_cycle(self):
+        self.assertEqual(self.order("cycle"), ["D", "C", "B", "A"])
+
+    def test_dependencies_first(self):
+        order = self.order("deep")
+        self.assertLess(order.index("E"), order.index("XA"))
+        self.assertEqual(order[-1], "A")
 
 
 if __name__ == "__main__":
